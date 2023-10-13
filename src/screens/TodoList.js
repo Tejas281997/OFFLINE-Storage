@@ -1,6 +1,7 @@
 import {
   ApolloClient,
   gql,
+  persistor,
   InMemoryCache,
   useMutation,
   useQuery,
@@ -9,13 +10,16 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  LogBox,
   Pressable,
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   View,
 } from 'react-native';
 import {RestLink} from 'apollo-link-rest';
+import {MMKV_STORAGE, purgeCache} from '../apolloClient'
 import React, {useEffect, useState} from 'react';
 import query from '../queries/Query';
 import {
@@ -23,6 +27,9 @@ import {
   DELETE_TODO_MUTATION,
   UPDATE_TODO_MUTATION,
 } from '../queries/Mutation';
+import Logout from './logout';
+import useLogout from './useLogout';
+// import Logout from './logout';
 
 export const TodoList = () => {
   const [title, setTitle] = useState('');
@@ -48,7 +55,7 @@ export const TodoList = () => {
   });
 
   useEffect(() => {
-    console.log('Data:', data);
+    //console.log('Data:', JSON.stringify(data,2,2));
   }, [data]);
 
   const handleCreateTodo = async () => {
@@ -71,12 +78,37 @@ export const TodoList = () => {
 
   const handleRefresh = async () => {
     try {
-      await refetch();
+      //await refetch();
+
+     // Alert('logout ....');
+      // log(' usertoken', userToken)
+      //purgeCache();
+      console.log('logged out!!')
+      const keys = MMKV_STORAGE.getAllKeys()
+      const res = MMKV_STORAGE.getString('apollo-cache-persist');
+      console.log('keys',JSON.stringify(res,2,2));
+      console.log("========================")
+      // console.log('keys',JSON.parse(res));
+     // useLogout();
+      // await persistor.pause()
+      // await persistor.purge()
+      // await client.reset()
+      // onPress={handleCreateTodo}>
       console.log('Data refreshed successfully!');
+
+
     } catch (error) {
       console.error('Error refreshing data:', error);
     }
+
+
   };
+
+
+  
+  
+  
+  
 
   return (
     <View style={{alignItems: 'center'}}>
@@ -132,6 +164,21 @@ export const TodoList = () => {
       <Pressable
         style={{
           margin: 10,
+          backgroundColor: 'blue',
+          padding: 10,
+          borderWidth: 1,
+          borderColor: 'blue',
+          borderRadius: 10,
+        }}
+        onPress={handleRefresh}>
+        <Text style={{fontSize: 15, fontWeight: '400', color: 'white'}}>
+          Logout
+        </Text>
+      </Pressable>
+
+      <Pressable
+        style={{
+          margin: 10,
           backgroundColor: 'green',
           padding: 10,
           borderWidth: 1,
@@ -156,7 +203,7 @@ export const TodoList = () => {
       ) : (
         <View style={{alignItems: 'center', marginTop: 10}}>
           <ScrollView style={{marginBottom: 120}}>
-            {data.todos.map(todo => (
+            {data?.todos?.map(todo => (
               <View key={todo.id}>
                 <Text
                   style={{
