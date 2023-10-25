@@ -18,23 +18,21 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {RestLink} from 'apollo-link-rest';
-import {MMKV_STORAGE, purgeCache} from '../apolloClient'
-import React, {useEffect, useState} from 'react';
+import { RestLink } from 'apollo-link-rest';
+import { MMKV_STORAGE, purgeCache } from '../apolloClient'
+import React, { useEffect, useState } from 'react';
 import query from '../queries/Query';
 import {
   CREATE_TODO,
   DELETE_TODO_MUTATION,
   UPDATE_TODO_MUTATION,
 } from '../queries/Mutation';
-import Logout from './logout';
-import useLogout from './useLogout';
-// import Logout from './logout';
+
 
 export const TodoList = () => {
   const [title, setTitle] = useState('');
 
-  const {loading, error, data, refetch} = useQuery(query);
+  const { loading, error, data, refetch } = useQuery(query);
 
   const [createTodo] = useMutation(CREATE_TODO, {
     onError: error => {
@@ -66,7 +64,7 @@ export const TodoList = () => {
 
     try {
       console.log('Creating todo...');
-      await createTodo({variables: {title}});
+      await createTodo({ variables: { title } });
       console.log('Todo created successfully!');
       setTitle('');
       refetch();
@@ -78,22 +76,14 @@ export const TodoList = () => {
 
   const handleRefresh = async () => {
     try {
-      //await refetch();
 
-     // Alert('logout ....');
-      // log(' usertoken', userToken)
-      //purgeCache();
       console.log('logged out!!')
       const keys = MMKV_STORAGE.getAllKeys()
       const res = MMKV_STORAGE.getString('apollo-cache-persist');
-      console.log('keys',JSON.stringify(res,2,2));
+      console.log('keys', JSON.stringify(res, 2, 2));
       console.log("========================")
       // console.log('keys',JSON.parse(res));
-     // useLogout();
-      // await persistor.pause()
-      // await persistor.purge()
-      // await client.reset()
-      // onPress={handleCreateTodo}>
+
       console.log('Data refreshed successfully!');
 
 
@@ -105,13 +95,13 @@ export const TodoList = () => {
   };
 
 
-  
-  
-  
-  
+
+
+
+
 
   return (
-    <View style={{alignItems: 'center'}}>
+    <View style={{ alignItems: 'center' }}>
       <Text
         style={{
           fontSize: 22,
@@ -156,7 +146,7 @@ export const TodoList = () => {
           borderRadius: 10,
         }}
         onPress={handleCreateTodo}>
-        <Text style={{fontSize: 15, fontWeight: '400', color: 'white'}}>
+        <Text style={{ fontSize: 15, fontWeight: '400', color: 'white' }}>
           Create Todo
         </Text>
       </Pressable>
@@ -171,7 +161,7 @@ export const TodoList = () => {
           borderRadius: 10,
         }}
         onPress={handleRefresh}>
-        <Text style={{fontSize: 15, fontWeight: '400', color: 'white'}}>
+        <Text style={{ fontSize: 15, fontWeight: '400', color: 'white' }}>
           Logout
         </Text>
       </Pressable>
@@ -186,7 +176,7 @@ export const TodoList = () => {
           borderRadius: 10,
         }}
         onPress={handleRefresh}>
-        <Text style={{fontSize: 15, fontWeight: '400', color: 'white'}}>
+        <Text style={{ fontSize: 15, fontWeight: '400', color: 'white' }}>
           Refresh
         </Text>
       </Pressable>
@@ -201,8 +191,8 @@ export const TodoList = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : (
-        <View style={{alignItems: 'center', marginTop: 10}}>
-          <ScrollView style={{marginBottom: 120}}>
+        <View style={{ alignItems: 'center', marginTop: 10 }}>
+          <ScrollView style={{ marginBottom: 120 }}>
             {data?.todos?.map(todo => (
               <View key={todo.id}>
                 <Text
